@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.utils.auth import role_required
 from app.services.astronaut_service import AstronautService
 
 astronaut_bp = Blueprint('astronaut', __name__)
@@ -10,6 +11,7 @@ astronaut_bp = Blueprint('astronaut', __name__)
 
 @astronaut_bp.route('/astronauts', methods=['GET'])
 @jwt_required()
+@role_required('admin', 'Astronaut')
 def get_astronauts():
     """Obtiene todos los astronautas."""
 

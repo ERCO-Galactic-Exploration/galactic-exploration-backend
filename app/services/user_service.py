@@ -25,7 +25,6 @@ class UserService():
 
             hashed_password = generate_password_hash(validated_data["password"])
             validated_data["password"] = hashed_password
-
             user = UserRepository.create(validated_data)
             # user.set_password(validated_data["password"])
 
