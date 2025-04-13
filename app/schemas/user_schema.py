@@ -17,7 +17,7 @@ class UserSchema(SQLAlchemyAutoSchema):
     
     class Meta:
         model = UserModel
-        load_instance = True
+        # load_instance = True
         include_fk = True
 
 user_schema = UserSchema()

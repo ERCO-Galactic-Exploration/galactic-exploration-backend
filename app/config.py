@@ -18,4 +18,4 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
-    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(minutes=5)
+    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(minutes=30)

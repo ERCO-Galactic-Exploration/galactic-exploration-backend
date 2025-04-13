@@ -1,4 +1,6 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
+from app.utils.auth import role_required
 from app.services.mission_crew_service import MissionCrewService
 
 """
@@ -8,6 +10,8 @@ from app.services.mission_crew_service import MissionCrewService
 mission_crew_bp = Blueprint('mission_crew', __name__)
 
 @mission_crew_bp.route('/missions/<int:mission_id>/assign_astronaut', methods=['POST'])
+@jwt_required()
+@role_required('Admin', 'Mission director')
 def assign_astronaut(mission_id):
     """
     Asigna uno o varios astronautas a una misión.
@@ -20,6 +24,8 @@ def assign_astronaut(mission_id):
 
 
 @mission_crew_bp.route('/missions/<int:mission_id>/astronauts', methods=['GET'])
+@jwt_required()
+@role_required('Admin', 'Mission director', 'Flight operator')
 def get_astronauts_by_mission_id(mission_id):
     """
     Obtiene los astronautas de una misión.
@@ -29,6 +35,8 @@ def get_astronauts_by_mission_id(mission_id):
     return jsonify(message), status_code
 
 @mission_crew_bp.route('/missions/<int:astronaut_id>/missions', methods=['GET'])
+@jwt_required()
+@role_required('Admin', 'Mission director')
 def get_missions_by_astronaut_id(astronaut_id):
     """
     Obtiene las misiones de un astronauta.
@@ -38,6 +46,8 @@ def get_missions_by_astronaut_id(astronaut_id):
     return jsonify(message), status_code
 
 @mission_crew_bp.route('/missions/<int:mission_id>/astronauts/<int:astronaut_id>', methods=['DELETE'])
+@jwt_required()
+@role_required('Admin', 'Mission director')
 def unassign_astronaut(mission_id, astronaut_id):
     """
     Desasigna un astronauta de una misión.

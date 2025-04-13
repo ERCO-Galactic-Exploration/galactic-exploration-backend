@@ -23,10 +23,14 @@ def login():
     if not email or not password:
         return jsonify({"error": "Email and password are required"}), 400
     
-    user = UserModel.query.filter_by(email=email).first()
-    # user = UserService.get_user(email)
-    if user and user.check_password(password):
-        access_token = create_access_token(identity=user.email, additional_claims={"role": "Astronaut"})
+    # user = UserModel.query.filter_by(email=email).first()
+    user_information, status_code = UserService.get_user(email, password)
+    print('user_information: ', user_information)
+    if status_code == 200:
+        email_validated = user_information.get('email')
+        role = user_information.get('role')
+        # print(role)
+        access_token = create_access_token(identity=email_validated, additional_claims={"role": role.get('name')})
         response = make_response(jsonify({"message": "Login successful"}), 200)
         response.set_cookie('access_token', access_token, httponly=True, secure=True, samesite='None')
         return response

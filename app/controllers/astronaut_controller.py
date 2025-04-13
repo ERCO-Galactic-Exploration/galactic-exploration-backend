@@ -11,7 +11,7 @@ astronaut_bp = Blueprint('astronaut', __name__)
 
 @astronaut_bp.route('/astronauts', methods=['GET'])
 @jwt_required()
-@role_required('admin', 'Astronaut')
+@role_required('Admin', 'Mission director', 'Astronaut')
 def get_astronauts():
     """Obtiene todos los astronautas."""
 
@@ -26,6 +26,8 @@ def get_astronauts():
         return jsonify({"error": str(e)}), 500
 
 @astronaut_bp.route('/astronauts/<int:astronaut_id>', methods=['GET'])
+@jwt_required()
+@role_required('Admin', 'Astronaut', 'Mission director')
 def get_astronaut_by_id(astronaut_id):
     """Obtiene un astronauta por ID."""
 
@@ -33,6 +35,8 @@ def get_astronaut_by_id(astronaut_id):
     return jsonify(message), status_code
 
 @astronaut_bp.route('/astronauts', methods=['POST'])
+@jwt_required()
+@role_required('Admin')
 def create_astronaut():
     """Crea un nuevo astronauta."""
 
@@ -43,6 +47,8 @@ def create_astronaut():
 
 
 @astronaut_bp.route('/astronauts/<int:astronaut_id>', methods=['PUT'])
+@jwt_required()
+@role_required('Admin')
 def update_astronaut(astronaut_id):
     """Actualiza un astronauta existente."""
 
@@ -51,6 +57,8 @@ def update_astronaut(astronaut_id):
     return jsonify(response), status_code
 
 @astronaut_bp.route('/astronauts/<int:astronaut_id>', methods=['DELETE'])
+@jwt_required()
+@role_required('Admin')
 def delete_astronaut(astronaut_id):
     """Elimina un astronauta."""
 

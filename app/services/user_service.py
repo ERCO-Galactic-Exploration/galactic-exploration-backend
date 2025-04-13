@@ -2,7 +2,7 @@ from sqlalchemy.exc import IntegrityError
 from marshmallow import ValidationError
 from app.repositories.user_repository import UserRepository
 from app.schemas.user_schema import user_schema, users_schema
-from app.models.user import UserModel, generate_password_hash
+from app.models.user import UserModel, generate_password_hash, check_password_hash
 
 class UserService():
     """
@@ -10,20 +10,26 @@ class UserService():
     """
 
     @staticmethod
-    def get_user(user_email):
+    def get_user(user_email, password):
         user = UserRepository.get_by_id(user_email)
         
         if not user:
             return {"error": "User not found"}, 404
+
+        if user and user.check_password(password):
+            return user_schema.dump(user), 200
+        else: 
+            return {"error": "Invalid credentials"}, 401
         
-        return user_schema.dump(user), 200
     
     @staticmethod
     def create_user(data):
         try:
+            # print('data: ', data)
             validated_data = user_schema.load(data)
 
             hashed_password = generate_password_hash(validated_data["password"])
+            print('hashed_password: ', hashed_password)
             validated_data["password"] = hashed_password
             user = UserRepository.create(validated_data)
             # user.set_password(validated_data["password"])

@@ -1,4 +1,6 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
+from app.utils.auth import role_required
 from app.services.rocket_service import RocketService
 
 rocket_bp = Blueprint('rocket', __name__)
@@ -8,6 +10,8 @@ rocket_bp = Blueprint('rocket', __name__)
 """
 
 @rocket_bp.route('/rockets', methods=['GET'])
+@jwt_required()
+@role_required('Admin', 'Astronaut', 'Mission director', 'Flight operator')
 def get_rockets():
     """Obtiene todos los cohetes."""
 
@@ -18,6 +22,8 @@ def get_rockets():
         return jsonify({"error": str(e)}), 500
 
 @rocket_bp.route('/rockets/<int:rocket_id>', methods=['GET'])
+@jwt_required()
+@role_required('Admin', 'Astronaut', 'Mission director', 'Flight operator')
 def get_rocket_by_id(rocket_id):
     """Obtiene un cohete por ID."""
 
@@ -25,6 +31,8 @@ def get_rocket_by_id(rocket_id):
     return jsonify(message), status_code
 
 @rocket_bp.route('/rockets', methods=['POST'])
+@jwt_required()
+@role_required('Admin')
 def create_rocket():
     """Crea un nuevo cohete."""
 
@@ -34,6 +42,8 @@ def create_rocket():
 
 
 @rocket_bp.route('/rockets/<int:rocket_id>', methods=['PUT'])
+@jwt_required()
+@role_required('Admin')
 def update_rocket(rocket_id):
     """Actualiza un cohete existente."""
 
@@ -42,6 +52,8 @@ def update_rocket(rocket_id):
     return jsonify(response), status_code
 
 @rocket_bp.route('/rockets/<int:rocket_id>', methods=['DELETE'])
+@jwt_required()
+@role_required('Admin')
 def delete_rocket(rocket_id):
     """Elimina un cohete."""
 
