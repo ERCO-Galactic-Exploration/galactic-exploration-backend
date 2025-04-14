@@ -1,7 +1,8 @@
 from flask import Flask
-# from flask_cors import CORS
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 # from app.models import *
+from flasgger import Swagger
 from app.controllers.planet_controller import planet_bp
 from app.controllers.astronaut_controller import astronaut_bp
 from app.controllers.rocket_controller import rocket_bp
@@ -18,7 +19,33 @@ from app.controllers.auth_controller import auth_bp
 
 def create_app():
     app = Flask(__name__)
+
+    swagger_template = {
+        "swagger": "2.0",
+        "info": {
+            "title": "API de Planetas",
+            "description": "Documentación de la API",
+            "version": "1.0"
+        },
+        "securityDefinitions": {
+            "Bearer": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header",
+                "description": "Introduce tu token JWT como: **Bearer &lt;tu_token&gt;**"
+            }
+        },
+        "security": [{"Bearer": []}]
+    }
+    
+    swagger = Swagger(app, template=swagger_template)
+
     app.config.from_object('app.config.Config')
+
+    CORS(app, supports_credentials=True)
+    # CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir CORS para todas las rutas de la API
+    # CORS(app, supports_credentials=True)  # Permitir CORS con credenciales    
+
     jwt = JWTManager(app)
 
     from app.database import db

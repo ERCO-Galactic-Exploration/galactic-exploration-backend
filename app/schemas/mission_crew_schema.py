@@ -1,15 +1,17 @@
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow import fields
-from app.models.astronaut import Astronaut
-from app.models.mission import Mission
+# from app.models.astronaut import Astronaut
+# from app.models.mission import Mission
+from app.schemas.astronaut_schema import AstronautSchema
+from app.schemas.mission_schema import MissionSchema
 
-class AstronautSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = Astronaut
+# class AstronautSchema(SQLAlchemyAutoSchema):
+#     class Meta:
+#         model = Astronaut
 
-class MissionSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = Mission
+# class MissionSchema(SQLAlchemyAutoSchema):
+#     class Meta:
+#         model = Mission
 
 class MissionCrewSchema(SQLAlchemyAutoSchema):
     astronaut = fields.Nested(AstronautSchema, dump_only=True)
